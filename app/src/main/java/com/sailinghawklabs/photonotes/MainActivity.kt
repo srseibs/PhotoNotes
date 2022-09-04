@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 
+// https://youtu.be/FJZ__Ri38I0?t=361
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
