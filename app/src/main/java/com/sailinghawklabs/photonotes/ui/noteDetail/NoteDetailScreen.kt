@@ -1,4 +1,4 @@
-package com.sailinghawklabs.photonotes.ui.NoteDetail
+package com.sailinghawklabs.photonotes.ui.noteDetail
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -59,7 +59,6 @@ fun NoteDetailScreen(
 
 
     PhotoNotesTheme {
-
         Scaffold(
             topBar = {
                 GenericAppBar(
