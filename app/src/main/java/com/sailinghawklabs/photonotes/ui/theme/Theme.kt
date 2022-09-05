@@ -14,17 +14,23 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = ThemeColors.Night.primary,
+    surface = ThemeColors.Night.card,
+    surfaceVariant = ThemeColors.Night.cardAlternate,
+    onSurface = ThemeColors.Night.text,
+    background = ThemeColors.Night.background
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = ThemeColors.Day.primary,
+    surface = ThemeColors.Day.card,
+    surfaceVariant = ThemeColors.Day.cardAlternate,
+    onSurface = ThemeColors.Day.text,
+    background = ThemeColors.Day.background
+)
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -35,7 +41,7 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
-)
+
 
 @Composable
 fun PhotoNotesTheme(
@@ -53,6 +59,16 @@ fun PhotoNotesTheme(
         else -> LightColorScheme
     }
 
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            window.statusBarColor = colorScheme.primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            // getWindowInsetsController is DEPRECATED
+            //            ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
+        }
+    }
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
