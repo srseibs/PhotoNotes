@@ -33,6 +33,7 @@ import coil.request.ImageRequest
 import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.PhotoNotesApp
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
+import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,6 +142,4 @@ fun NoteCreateScreen(
             }
         }
     }
-
-
 }

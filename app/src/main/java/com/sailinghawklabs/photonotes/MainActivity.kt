@@ -14,6 +14,13 @@ import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 
 // https://youtu.be/MCC0S_dSrz8
 
+// things to look at later:
+//   + Use 'by' delegation
+//   + Add Hilt
+//   + Use of Theme in each screen vs once in the activity
+//   + Passing of MutableState vars into sub-composables vs simple vars.
+//   + Passing NavController into sub-composables vs onExit() Lambda hoisting.
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

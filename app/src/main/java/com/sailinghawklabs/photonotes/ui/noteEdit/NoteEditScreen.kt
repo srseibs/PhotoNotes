@@ -37,6 +37,7 @@ import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.PhotoNotesApp
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
+import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

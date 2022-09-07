@@ -1,6 +1,5 @@
 package com.sailinghawklabs.photonotes.model
 
-import android.provider.SyncStateContract
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
@@ -11,7 +10,7 @@ import java.time.format.DateTimeFormatter
 
 @Entity(
     tableName = TABLE_NAME,
-    indices = [ Index(value = ["id"], unique = true) ]
+    indices = [Index(value = ["id"], unique = true)]
 )
 data class Note(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
@@ -22,6 +21,21 @@ data class Note(
 
 )
 
+private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-fun getDateNow()
-= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+fun getDateNow(): String {
+    return LocalDateTime.now().format(dateTimeFormat)
+}
+
+
+fun Note.getDay() =
+    if (this.dateUpdated.isEmpty()) ""
+    else
+        LocalDateTime
+            .parse(dateUpdated, dateTimeFormat)
+            .toLocalDate()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+val placeholderList = listOf(Note(title = "Empty Note List", note = "..."))
+
+fun List<Note>?.orPlaceHolder() = if (this.isNullOrEmpty()) placeholderList else this

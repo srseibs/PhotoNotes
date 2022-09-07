@@ -12,6 +12,7 @@ object Constants {
         title = "No Details!"
     )
 
+    fun noteCreateRoute() = "noteCreate"
     fun noteDetailRoute(noteId: Int) = "noteDetail/$noteId"
     fun noteEditRoute(noteId: Int) = "noteEdit/$noteId"
 }
