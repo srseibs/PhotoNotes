@@ -17,12 +17,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.FolderDelete
 import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material.icons.outlined.FolderDelete
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -46,9 +46,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,14 +71,25 @@ fun NoteListScreen(
     viewModel: NotesViewModel,
     modifier: Modifier = Modifier
 ) {
-    var deletePrompt = remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    // TODO make this by
     var searchQuery = remember { mutableStateOf("") }
-    var notesToDelete = remember { mutableStateOf(listOf<Note>()) }
-    var dialogOpenState = remember { mutableStateOf(false) }
+
+    // states for the Delete dialog
+    var deletePrompt by remember { mutableStateOf("") }
+    var notesToDelete by remember { mutableStateOf(listOf<Note>()) }
+    var dialogOpenState by remember { mutableStateOf(false) }
+
+    fun showDeleteDialog(notes: List<Note>, prompt: String) {
+        deletePrompt = prompt
+        notesToDelete = notes
+        dialogOpenState = true
+    }
+
 
     val noteList by viewModel.notes.observeAsState()
 
-    val context = LocalContext.current
 
     PhotoNotesTheme {
         Scaffold(
@@ -87,16 +98,17 @@ fun NoteListScreen(
                     title = "Photo Notes",
                     onIconClick = {
                         if (noteList?.isNotEmpty() == true) {
-                            deletePrompt.value = "Are you sure you want to delete all notes?"
-                            notesToDelete.value = noteList ?: emptyList()
-                            dialogOpenState.value = true
+                            showDeleteDialog(
+                                notes = noteList ?: emptyList(),
+                                "Are you sure you want to delete all notes?"
+                            )
                         } else {
                             Toast.makeText(context, "No notes found", Toast.LENGTH_SHORT).show()
                         }
                     },
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.FolderDelete,
+                            imageVector = Icons.Default.DeleteForever,
                             contentDescription = "Delete notes"
                         )
                     },
@@ -116,22 +128,28 @@ fun NoteListScreen(
         ) { contentPadding ->
 
             Column(
-                modifier = Modifier.padding(contentPadding)
+                modifier = modifier.padding(contentPadding)
             ) {
-                SearchBar(query = searchQuery.value, onQueryChanged = { searchQuery.value = it})
+                SearchBar(query = searchQuery.value, onQueryChanged = { searchQuery.value = it })
                 NotesList(
                     notes = noteList.orPlaceHolder(),
-                    openDialog = dialogOpenState,
+                    onDeleteNotes = { notesList, prompt ->
+                        showDeleteDialog(notesList, prompt)
+                    },
                     query = searchQuery,
-                    deletePrompt = deletePrompt,
                     navController = navController,
-                    notesToDelete = notesToDelete
                 )
-                DeleteDialog(
-                    text = "",
-                    cancelPressed = {},
-                    deletePressed = {},
-                )
+                if (dialogOpenState) {
+                    DeleteDialog(
+                        text = deletePrompt,
+                        cancelPressed = {},
+                        deletePressed = {
+                            notesToDelete.forEach {
+                                viewModel.deleteNote(it)
+                            }
+                        },
+                    )
+                }
             }
         }
     }
@@ -174,11 +192,9 @@ fun SearchBar(
 @Composable
 fun NotesList(
     notes: List<Note>,
-    openDialog: MutableState<Boolean>,
+    onDeleteNotes: (notes: List<Note>, prompt: String) -> Unit,
     query: MutableState<String>,
-    deletePrompt: MutableState<String>,
     navController: NavController,
-    notesToDelete: MutableState<List<Note>>,
     modifier: Modifier = Modifier
 ) {
     var previousHeader = ""
@@ -204,13 +220,15 @@ fun NotesList(
                     Text(text = note.getDay(), style = MaterialTheme.typography.titleSmall)
                 }
                 Spacer(modifier = Modifier.height(6.dp))
+
+                previousHeader = note.getDay()
             }
 
             NotesListItem(
                 note = note,
-                showDialog = openDialog,
-                deletePrompt = deletePrompt,
-                notesToDelete = notesToDelete,
+                onDelete = {
+                    onDeleteNotes(listOf(note), "Are you sure you want to delete this note?")
+                },
                 noteBackgroundColor = if (index % 2 == 0) {
                     MaterialTheme.colorScheme.surface
                 } else {
@@ -227,9 +245,7 @@ fun NotesList(
 @Composable
 fun NotesListItem(
     note: Note,
-    showDialog: MutableState<Boolean>,
-    deletePrompt: MutableState<String>,
-    notesToDelete: MutableState<List<Note>>,
+    onDelete: () -> Unit,
     navController: NavController,
     noteBackgroundColor: Color
 ) {
@@ -244,17 +260,18 @@ fun NotesListItem(
         Column(
             modifier = Modifier
                 .height(120.dp)
+                .fillMaxWidth()
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = false),
-                    onClick = { navController.navigate(Constants.noteDetailRoute(note.id ?: 0)) },
+                    onClick = {
+                        navController.navigate(Constants.noteDetailRouteWithParam(note.id ?: 0))
+                    },
                     onLongClick = {
                         if (note.id != 0) {
-                            showDialog.value = true
-                            deletePrompt.value = "Are you sure you want to delete this note?"
-                            notesToDelete.value = mutableListOf(note)
+                            onDelete()
                         }
-                    }
+                    },
                 )
         ) {
             Row {
@@ -267,7 +284,8 @@ fun NotesListItem(
                                 .build()
                         ),
                         contentDescription = "Image for a note",
-                        modifier = Modifier.fillMaxWidth(0.3f)
+                        modifier = Modifier.fillMaxWidth(0.3f),
+                        contentScale = ContentScale.Crop,
                     )
                 }
                 Column() {
@@ -303,6 +321,7 @@ fun NotesFab(
     action: () -> Unit,
 ) {
     return FloatingActionButton(
+        modifier = modifier,
         onClick = action,
     )
     {
@@ -322,6 +341,7 @@ fun DeleteDialog(
 
     if (showDialog) {
         AlertDialog(
+            modifier = modifier,
             onDismissRequest = { showDialog = false },
             title = {
                 Text("Delete Note", modifier = Modifier.padding(horizontal = 12.dp))
@@ -352,7 +372,7 @@ fun SearchPreview() {
     var search by remember { mutableStateOf("Tennis") }
 
     PhotoNotesTheme() {
-        SearchBar(query = search, onQueryChanged = {search = it} )
+        SearchBar(query = search, onQueryChanged = { search = it })
     }
 
 }

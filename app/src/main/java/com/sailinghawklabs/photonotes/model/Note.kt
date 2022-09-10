@@ -36,6 +36,6 @@ fun Note.getDay() =
             .toLocalDate()
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
-val placeholderList = listOf(Note(title = "Empty Note List", note = "..."))
+val placeholderList = listOf(Note(title = "Empty Note List", note = "...", id = 0))
 
 fun List<Note>?.orPlaceHolder() = if (this.isNullOrEmpty()) placeholderList else this

@@ -12,7 +12,14 @@ object Constants {
         title = "No Details!"
     )
 
-    fun noteCreateRoute() = "noteCreate"
-    fun noteDetailRoute(noteId: Int) = "noteDetail/$noteId"
-    fun noteEditRoute(noteId: Int) = "noteEdit/$noteId"
+    const val NOTE_CREATE_ROUTE = "noteCreate"
+    const val NOTES_LIST_ROUTE = "notesList"
+    const val NOTE_DETAIL_ROUTE = "noteDetail"
+    const val NOTE_EDIT_ROUTE = "noteEdit"
+    const val NOTES_ARGUMENT_ID = "noteId"
+
+    fun noteCreateRoute() = NOTE_CREATE_ROUTE
+    fun noteListRoute() = NOTES_LIST_ROUTE
+    fun noteDetailRouteWithParam(id: Int) = "$NOTE_DETAIL_ROUTE/$id"
+    fun noteEditRouteWithParam(id: Int) = "$NOTE_EDIT_ROUTE/$id"
 }

@@ -77,7 +77,7 @@ fun NoteEditScreen(
 
     LaunchedEffect(key1 = true) {
         scope.launch(Dispatchers.IO) {
-            note = viewModel.getNote(noteId ?: 0) ?: Constants.noteDetailPlaceHolder
+            note = viewModel.getNote(noteId) ?: Constants.noteDetailPlaceHolder
             currentTitle = note.title
             currentNote = note.note
             currentImage = note.imageUri
@@ -94,9 +94,9 @@ fun NoteEditScreen(
                         viewModel.updateNote(
                             Note(
                                 id = note.id,
-                                title = note.title,
-                                note = note.note,
-                                imageUri = note.imageUri
+                                title = currentTitle,
+                                note = currentNote,
+                                imageUri = currentImage
                             )
                         )
                         navController.popBackStack()

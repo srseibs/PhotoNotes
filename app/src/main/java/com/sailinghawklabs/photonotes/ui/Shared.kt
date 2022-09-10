@@ -18,6 +18,7 @@ fun GenericAppBar(
     modifier: Modifier = Modifier
 ) {
     SmallTopAppBar(
+        modifier = modifier,
         title = { Text(text = title) },
         actions = {
             IconButton(onClick = { onIconClick?.invoke() }) {

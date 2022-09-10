@@ -63,7 +63,7 @@ fun NoteDetailScreen(
             topBar = {
                 GenericAppBar(
                     title = note?.title ?: "",
-                    onIconClick = { navController.navigate(Constants.noteEditRoute(noteId)) },
+                    onIconClick = { navController.navigate(Constants.noteEditRouteWithParam(noteId)) },
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Edit,
