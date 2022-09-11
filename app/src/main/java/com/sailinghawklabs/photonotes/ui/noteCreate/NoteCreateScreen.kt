@@ -49,6 +49,11 @@ fun NoteCreateScreen(
     var currentImage by remember { mutableStateOf("") }
     var saveButtonVisible by remember { mutableStateOf(false) }
 
+    fun setSaveButtonVisibility() {
+        saveButtonVisible =
+            (currentTitle.isNotEmpty() && currentNote.isNotEmpty())
+    }
+
     val getImageRequest = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri ->
@@ -58,10 +63,7 @@ fun NoteCreateScreen(
             currentImage = uri.toString()
         })
 
-    fun setSaveButtonVisibility() {
-        saveButtonVisible =
-                ( currentTitle.isNotEmpty() && currentNote.isNotEmpty() )
-    }
+
 
     PhotoNotesTheme {
         Scaffold(
@@ -82,9 +84,10 @@ fun NoteCreateScreen(
                             contentDescription = "Save note"
                         )
                     },
-                    iconState = remember { mutableStateOf(saveButtonVisible) }
+                    iconState = saveButtonVisible,
                 )
             },
+
             floatingActionButton = {
                 NotesFab(
                     contentDescription = "Add Photo",
@@ -103,7 +106,6 @@ fun NoteCreateScreen(
             )
             {
                 if (currentImage.isNotEmpty()) {
-
                     Image(
                         painter = rememberAsyncImagePainter(
                             ImageRequest
@@ -117,29 +119,30 @@ fun NoteCreateScreen(
                             .padding(6.dp),
                         contentScale = ContentScale.Crop,
                     )
-
-                    TextField(
-                        value = currentTitle,
-                        onValueChange = { value ->
-                            currentTitle = value
-                            setSaveButtonVisibility()
-                        },
-                        label = { Text("Title") }
-                    )
-                    Spacer(Modifier.padding(12.dp))
-                    TextField(
-                        value = currentNote,
-                        modifier = Modifier
-                            .fillMaxHeight(0.5f)
-                            .fillMaxWidth(),
-                        onValueChange = { value ->
-                            currentNote = value
-                            setSaveButtonVisibility()
-                        },
-                        label = { Text("Content") }
-                    )
                 }
+
+                TextField(
+                    value = currentTitle,
+                    onValueChange = { value ->
+                        currentTitle = value
+                        setSaveButtonVisibility()
+                    },
+                    label = { Text("Title") }
+                )
+                Spacer(Modifier.padding(12.dp))
+                TextField(
+                    value = currentNote,
+                    modifier = Modifier
+                        .fillMaxHeight(0.5f)
+                        .fillMaxWidth(),
+                    onValueChange = { value ->
+                        currentNote = value
+                        setSaveButtonVisibility()
+                    },
+                    label = { Text("Content") }
+                )
             }
+
         }
     }
 }

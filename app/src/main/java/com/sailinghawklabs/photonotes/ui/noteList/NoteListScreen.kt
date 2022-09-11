@@ -2,16 +2,19 @@ package com.sailinghawklabs.photonotes.ui.noteList
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,13 +23,14 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.material.icons.filled.FolderDelete
 import androidx.compose.material.icons.outlined.Cancel
-import androidx.compose.material.icons.outlined.FolderDelete
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardDefaults.cardColors
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -38,7 +42,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +49,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -73,8 +75,7 @@ fun NoteListScreen(
 ) {
     val context = LocalContext.current
 
-    // TODO make this by
-    var searchQuery = remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
 
     // states for the Delete dialog
     var deletePrompt by remember { mutableStateOf("") }
@@ -87,69 +88,70 @@ fun NoteListScreen(
         dialogOpenState = true
     }
 
+    val noteList by viewModel.notes.observeAsState(emptyList())
 
-    val noteList by viewModel.notes.observeAsState()
+    Scaffold(
+        topBar = {
+            GenericAppBar(
+                title = "Photo Notes",
+                onIconClick = {
+                    if (noteList.isNotEmpty()) {
+                        showDeleteDialog(
+                            notes = noteList ?: emptyList(),
+                            "Are you sure you want to delete all notes?"
+                        )
+                    } else {
+                        Toast.makeText(context, "No notes found", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.DeleteForever,
+                        contentDescription = "Delete notes"
+                    )
+                },
+                iconState = true
+            )
+        },
+        floatingActionButton = {
+            NotesFab(
+                contentDescription = "New Note",
+                action = {
+                    navController.navigate(Constants.noteCreateRoute())
+                },
+                icon = Icons.Default.Add
+            )
+        }
 
+    ) { contentPadding ->
 
-    PhotoNotesTheme {
-        Scaffold(
-            topBar = {
-                GenericAppBar(
-                    title = "Photo Notes",
-                    onIconClick = {
-                        if (noteList?.isNotEmpty() == true) {
-                            showDeleteDialog(
-                                notes = noteList ?: emptyList(),
-                                "Are you sure you want to delete all notes?"
-                            )
-                        } else {
-                            Toast.makeText(context, "No notes found", Toast.LENGTH_SHORT).show()
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(contentPadding)
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            SearchBar(query = searchQuery, onQueryChanged = { searchQuery = it })
+            Log.d("NoteListScreen", "list = $noteList")
+            NotesList(
+                notes = noteList.orPlaceHolder(),
+                onDeleteNotes = { notesList, prompt ->
+                    showDeleteDialog(notesList, prompt)
+                },
+                query = searchQuery,
+                navController = navController,
+            )
+            if (dialogOpenState) {
+                DeleteDialog(
+                    text = deletePrompt,
+                    cancelPressed = { dialogOpenState = false },
+                    deletePressed = {
+                        dialogOpenState = false
+                        notesToDelete.forEach {
+                            viewModel.deleteNote(it)
                         }
                     },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.DeleteForever,
-                            contentDescription = "Delete notes"
-                        )
-                    },
-                    iconState = remember { mutableStateOf(true) }
                 )
-            },
-            floatingActionButton = {
-                NotesFab(
-                    contentDescription = "New Note",
-                    action = {
-                        navController.navigate(Constants.noteCreateRoute())
-                    },
-                    icon = Icons.Default.Add
-                )
-            }
-
-        ) { contentPadding ->
-
-            Column(
-                modifier = modifier.padding(contentPadding)
-            ) {
-                SearchBar(query = searchQuery.value, onQueryChanged = { searchQuery.value = it })
-                NotesList(
-                    notes = noteList.orPlaceHolder(),
-                    onDeleteNotes = { notesList, prompt ->
-                        showDeleteDialog(notesList, prompt)
-                    },
-                    query = searchQuery,
-                    navController = navController,
-                )
-                if (dialogOpenState) {
-                    DeleteDialog(
-                        text = deletePrompt,
-                        cancelPressed = {},
-                        deletePressed = {
-                            notesToDelete.forEach {
-                                viewModel.deleteNote(it)
-                            }
-                        },
-                    )
-                }
             }
         }
     }
@@ -175,7 +177,9 @@ fun SearchBar(
             modifier = Modifier
 //                .clip(RoundedCornerShape(12.dp))
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
             trailingIcon = {
                 AnimatedVisibility(
                     visible = query.isNotEmpty()
@@ -193,18 +197,19 @@ fun SearchBar(
 fun NotesList(
     notes: List<Note>,
     onDeleteNotes: (notes: List<Note>, prompt: String) -> Unit,
-    query: MutableState<String>,
+    query: String = "",
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
     var previousHeader = ""
-    val queriedNotes = remember(key1 = query) {
-        if (query.value.isEmpty()) {
+    val queriedNotes = remember(key1 = query, key2 = notes) {
+        if (query.isEmpty()) {
             notes
         } else {
-            notes.filter { it.note.contains(query.value) || it.title.contains(query.value) }
+            notes.filter { it.note.contains(query) || it.title.contains(query) }
         }
     }
+    Log.d("NoteListScreen", "NotesList: $queriedNotes")
 
     LazyColumn(
         contentPadding = PaddingValues(12.dp),
@@ -229,10 +234,16 @@ fun NotesList(
                 onDelete = {
                     onDeleteNotes(listOf(note), "Are you sure you want to delete this note?")
                 },
-                noteBackgroundColor = if (index % 2 == 0) {
-                    MaterialTheme.colorScheme.surface
+                cardColors = if (index % 2 == 0) {
+                    cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
                 } else {
-                    MaterialTheme.colorScheme.surfaceVariant
+                    cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
                 },
                 navController = navController,
             )
@@ -247,16 +258,13 @@ fun NotesListItem(
     note: Note,
     onDelete: () -> Unit,
     navController: NavController,
-    noteBackgroundColor: Color
+    cardColors: CardColors = CardDefaults.cardColors()
 ) {
 
     val context = LocalContext.current
 
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = noteBackgroundColor
-        ),
-    ) {
+    Card(colors = cardColors, elevation = CardDefaults.cardElevation(8.dp))
+    {
         Column(
             modifier = Modifier
                 .height(120.dp)
@@ -288,11 +296,11 @@ fun NotesListItem(
                         contentScale = ContentScale.Crop,
                     )
                 }
-                Column() {
+                Column {
                     Text(
                         text = note.title,
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.padding(horizontal = 12.dp),
                     )
                     Text(
                         text = note.note,
@@ -320,10 +328,7 @@ fun NotesFab(
     modifier: Modifier = Modifier,
     action: () -> Unit,
 ) {
-    return FloatingActionButton(
-        modifier = modifier,
-        onClick = action,
-    )
+    return FloatingActionButton(modifier = modifier, onClick = action)
     {
         Icon(imageVector = icon, contentDescription = contentDescription)
     }
@@ -361,17 +366,13 @@ fun DeleteDialog(
             },
         )
     }
-
 }
-
 
 @Preview(showSystemUi = false, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SearchPreview() {
-
     var search by remember { mutableStateOf("Tennis") }
-
-    PhotoNotesTheme() {
+    PhotoNotesTheme {
         SearchBar(query = search, onQueryChanged = { search = it })
     }
 
@@ -380,7 +381,7 @@ fun SearchPreview() {
 @Preview(showSystemUi = false, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun DeleteDialogPreview() {
-    PhotoNotesTheme() {
+    PhotoNotesTheme {
         DeleteDialog(
             text = "How about we delete this note? This area typically contains the supportive text " +
                     "which presents the details regarding the Dialog's purpose."

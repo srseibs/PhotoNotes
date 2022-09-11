@@ -8,6 +8,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
@@ -16,19 +17,26 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 
+
+
 private val DarkColorScheme = darkColorScheme(
     primary = ThemeColors.Night.primary,
-    surface = ThemeColors.Night.card,
-    surfaceVariant = ThemeColors.Night.cardAlternate,
-    onSurface = ThemeColors.Night.text,
+    primaryContainer = ThemeColors.Night.card,
+    onPrimaryContainer = ThemeColors.Night.text,
+    secondaryContainer = ThemeColors.Night.cardAlternate,
+    onSecondaryContainer = ThemeColors.Night.text,
+    surface = ThemeColors.Night.surface,
     background = ThemeColors.Night.background
 )
 
+
 private val LightColorScheme = lightColorScheme(
     primary = ThemeColors.Day.primary,
-    surface = ThemeColors.Day.card,
-    surfaceVariant = ThemeColors.Day.cardAlternate,
-    onSurface = ThemeColors.Day.text,
+    primaryContainer = ThemeColors.Day.card,
+    onPrimaryContainer = ThemeColors.Day.text,
+    secondaryContainer = ThemeColors.Day.cardAlternate,
+    onSecondaryContainer = ThemeColors.Day.text,
+    surface = ThemeColors.Day.surface,
     background = ThemeColors.Day.background
 )
 
@@ -47,7 +55,7 @@ private val LightColorScheme = lightColorScheme(
 fun PhotoNotesTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

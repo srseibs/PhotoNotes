@@ -16,21 +16,24 @@ sealed class ThemeColors(
     val card: Color,
     val cardAlternate: Color,
     val background: Color,
+    val surface: Color,
     val primary: Color,
     val text: Color
 ) {
     object Day : ThemeColors(
-        card = Color(0xFFBBDEFB),
-        cardAlternate = Color(0xFF8ED4A0),
+        card = Color(0xFF7CBCF6),
+        cardAlternate = Color(0xFFC9D3D6),
         background = Color(0xFFF3E5F5),
-        primary = Color(0xFF006AF6),
+        surface = Color(0xFF82C0FF),
+        primary = Color(0xFF1B2FB0),
         text = Color(0xFF000000)
     )
 
     object Night : ThemeColors(
-        card = Color(0xFF020D23),
+        card = Color(0xFF0E2249),
         cardAlternate = Color(0xFF133A41),
         background = Color(0xFF0C3C98),
+        surface = Color(0xFF22522F),
         primary = Color(0xFF172840),
         text = Color(0xffffffff)
     )

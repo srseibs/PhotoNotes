@@ -70,7 +70,7 @@ fun NoteDetailScreen(
                             contentDescription = "Edit note"
                         )
                     },
-                    iconState = remember { mutableStateOf(true) }
+                    iconState = true
                 )
             }
         ) { scaffoldPadding ->

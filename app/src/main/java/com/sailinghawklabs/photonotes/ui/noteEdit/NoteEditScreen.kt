@@ -107,7 +107,7 @@ fun NoteEditScreen(
                             contentDescription = "Save note"
                         )
                     },
-                    iconState = remember { mutableStateOf(saveButtonVisible) }
+                    iconState = saveButtonVisible,
                 )
             },
             floatingActionButton = {

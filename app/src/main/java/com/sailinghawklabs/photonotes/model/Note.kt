@@ -1,5 +1,6 @@
 package com.sailinghawklabs.photonotes.model
 
+import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
@@ -38,4 +39,10 @@ fun Note.getDay() =
 
 val placeholderList = listOf(Note(title = "Empty Note List", note = "...", id = 0))
 
-fun List<Note>?.orPlaceHolder() = if (this.isNullOrEmpty()) placeholderList else this
+fun List<Note>?.orPlaceHolder(): List<Note> {
+    Log.d("Note", "orPlaceHolder: $this")
+    return if (this.isNullOrEmpty())
+        placeholderList
+    else
+        this
+}

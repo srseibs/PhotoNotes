@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             PhotoNotesTheme {
+
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
