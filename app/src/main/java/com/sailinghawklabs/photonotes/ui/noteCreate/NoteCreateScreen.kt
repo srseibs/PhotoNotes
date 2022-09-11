@@ -61,7 +61,8 @@ fun NoteCreateScreen(
                 PhotoNotesApp.getUriPermission(uri)
             }
             currentImage = uri.toString()
-        })
+        }
+    )
 
 
 
@@ -111,6 +112,7 @@ fun NoteCreateScreen(
                             ImageRequest
                                 .Builder(LocalContext.current)
                                 .data(data = Uri.parse(currentImage))
+                                .build()
                         ),
                         contentDescription = "Note image",
                         modifier = Modifier

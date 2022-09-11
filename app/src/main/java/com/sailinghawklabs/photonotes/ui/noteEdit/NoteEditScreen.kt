@@ -134,6 +134,7 @@ fun NoteEditScreen(
                             ImageRequest
                                 .Builder(LocalContext.current)
                                 .data(data = Uri.parse(currentImage))
+                                .build()
                         ),
                         contentDescription = "Note image",
                         modifier = Modifier
@@ -142,29 +143,29 @@ fun NoteEditScreen(
                             .padding(6.dp),
                         contentScale = ContentScale.Crop,
                     )
-
-                    TextField(
-                        value = currentTitle,
-                        onValueChange = { value ->
-                            currentTitle = value
-                            setSaveButtonVisibility()
-                        },
-                        label = { Text("Title") }
-                    )
-                    Spacer(Modifier.padding(12.dp))
-                    TextField(
-                        value = currentNote,
-                        onValueChange = { value ->
-                            currentNote = value
-                            setSaveButtonVisibility()
-                        },
-                        label = { Text("Content") }
-                    )
                 }
+
+                TextField(
+                    value = currentTitle,
+                    onValueChange = { value ->
+                        currentTitle = value
+                        setSaveButtonVisibility()
+                    },
+                    label = { Text("Title") }
+                )
+                Spacer(Modifier.padding(12.dp))
+                TextField(
+                    value = currentNote,
+                    onValueChange = { value ->
+                        currentNote = value
+                        setSaveButtonVisibility()
+                    },
+                    label = { Text("Content") }
+                )
             }
+
         }
     }
-
 
 
 }

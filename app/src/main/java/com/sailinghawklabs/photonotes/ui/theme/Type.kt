@@ -37,13 +37,19 @@ val Typography = Typography(
     ),
 
     headlineLarge = TextStyle(
-        fontFamily = OpenSans,
+        fontFamily = OpenSansCondensed,
         fontWeight = FontWeight.W600,
         fontSize = 32.sp,
     ),
 
+    headlineMedium = TextStyle(
+        fontFamily = OpenSansCondensed,
+        fontWeight = FontWeight.W600,
+        fontSize = 28.sp,
+    ),
+
     headlineSmall = TextStyle(
-        fontFamily = OpenSans,
+        fontFamily = OpenSansCondensed,
         fontWeight = FontWeight.W600,
         fontSize = 24.sp
     ),

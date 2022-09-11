@@ -3,6 +3,7 @@ package com.sailinghawklabs.photonotes
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.navigation.NavType
 import androidx.navigation.NavType.Companion.IntType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,17 +39,20 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = Constants.NOTES_LIST_ROUTE
+                    startDestination = Constants.defineNoteListRoute()
                 ) {
+
                     // Notes List
-                    composable(Constants.NOTES_LIST_ROUTE) {
+                    composable(Constants.defineNoteListRoute()) {
                         NoteListScreen(navController, viewModel)
                     }
 
                     // Note detail page
                     composable(
-                        Constants.NOTE_DETAIL_ROUTE,
-                        arguments = listOf(navArgument(Constants.NOTES_ARGUMENT_ID) { IntType })
+                        Constants.defineNoteDetailRoute(),
+                        arguments = listOf(
+                            navArgument(Constants.NOTES_ARGUMENT_ID) { type = IntType }
+                        )
                     ) { navBackStackEntry ->
                         navBackStackEntry.arguments?.getInt(Constants.NOTES_ARGUMENT_ID)?.let {
                             NoteDetailScreen(
@@ -60,8 +64,10 @@ class MainActivity : ComponentActivity() {
 
                     // Note edit page
                     composable(
-                        Constants.NOTE_DETAIL_ROUTE,
-                        arguments = listOf(navArgument(Constants.NOTES_ARGUMENT_ID) { IntType })
+                        Constants.defineNoteEditRoute(),
+                        arguments = listOf(
+                            navArgument(Constants.NOTES_ARGUMENT_ID) { type = IntType }
+                        )
                     ) { navBackStackEntry ->
                         navBackStackEntry.arguments?.getInt(Constants.NOTES_ARGUMENT_ID)?.let {
                             NoteEditScreen(
@@ -72,7 +78,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     // Note Create page
-                    composable(Constants.NOTE_CREATE_ROUTE) {
+                    composable(Constants.defineNoteCreateRoute()) {
                         NoteCreateScreen(navController = navController, viewModel = viewModel)
                     }
 

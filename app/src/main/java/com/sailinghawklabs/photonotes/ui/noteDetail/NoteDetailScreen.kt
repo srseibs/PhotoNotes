@@ -29,8 +29,8 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.sailinghawklabs.photonotes.Constants
+import com.sailinghawklabs.photonotes.Constants.noteDetailPlaceHolder
 import com.sailinghawklabs.photonotes.NotesViewModel
-import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 import kotlinx.coroutines.Dispatchers
@@ -46,24 +46,28 @@ fun NoteDetailScreen(
 ) {
     val scope = rememberCoroutineScope()
 
-    var note: Note? by remember {
-        mutableStateOf(Constants.noteDetailPlaceHolder)
+    var note by remember {
+        mutableStateOf(noteDetailPlaceHolder)
     }
-
 
     LaunchedEffect(key1 = true) {
         scope.launch(Dispatchers.IO) {
-            note = viewModel.getNote(noteId)
+            note = viewModel.getNote(noteId) ?: noteDetailPlaceHolder
         }
     }
-
 
     PhotoNotesTheme {
         Scaffold(
             topBar = {
                 GenericAppBar(
-                    title = note?.title ?: "",
-                    onIconClick = { navController.navigate(Constants.noteEditRouteWithParam(noteId)) },
+                    title = note.title,
+                    onIconClick = {
+                        navController.navigate(
+                            Constants.callNoteEditRouteWithParam(
+                                noteId
+                            )
+                        )
+                    },
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Edit,
@@ -80,7 +84,7 @@ fun NoteDetailScreen(
                     .fillMaxSize()
             )
             {
-                note?.let { note ->
+                note.let { note ->
                     if (!note.imageUri.isNullOrEmpty()) {
 
                         Image(
@@ -88,6 +92,7 @@ fun NoteDetailScreen(
                                 ImageRequest
                                     .Builder(LocalContext.current)
                                     .data(data = Uri.parse(note.imageUri))
+                                    .build()
                             ),
                             contentDescription = "Note image",
                             modifier = Modifier
@@ -95,24 +100,27 @@ fun NoteDetailScreen(
                                 .fillMaxWidth(),
                             contentScale = ContentScale.Crop,
                         )
-
-                        Text(
-                            text = note.title,
-                            style = MaterialTheme.typography.displaySmall,
-                            modifier = Modifier.padding(horizontal = 24.dp).padding(top=24.dp)
-                        )
-                        Text(
-                            text = note.dateUpdated,
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier.padding(12.dp)
-                        )
-                        Text(
-                            text = note.note,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(12.dp)
-                        )
-
                     }
+
+                    Text(
+                        text = note.title,
+                        style = MaterialTheme.typography.displaySmall,
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 24.dp)
+                    )
+                    Text(
+                        text = note.dateUpdated,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                    Text(
+                        text = note.note,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(12.dp)
+                    )
+
+
                 }
             }
         }
