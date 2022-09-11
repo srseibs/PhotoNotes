@@ -13,24 +13,23 @@ import com.sailinghawklabs.photonotes.ui.noteDetail.NoteDetailScreen
 import com.sailinghawklabs.photonotes.ui.noteEdit.NoteEditScreen
 import com.sailinghawklabs.photonotes.ui.noteList.NoteListScreen
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 // DBTechProjects  Daniel Butler
 //  https://www.youtube.com/watch?v=eugou_G_YvY
 
 // things to look at later:
-//   + Use 'by' delegation
-//   + Add Hilt
-//   + Use of Theme in each screen vs once in the activity
-//   + Passing of MutableState vars into sub-composables vs simple vars.
-//   + Passing NavController into sub-composables vs onExit() Lambda hoisting.
+//   X Use 'by' delegation - no need for .value
+//   X Add Hilt - no need for MainActivity to know about the view model
+//   O Use of Theme in each screen vs once in the activity
+//   X Passing of MutableState vars into sub-composables vs {simple vars + Lambda}.
+//   O Stop passing NavController into sub-composables vs onAction() Lambda hoisting.
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var viewModel: NotesViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = NoteViewModelFactory(PhotoNotesApp.getDao()).create(NotesViewModel::class.java)
 
         setContent {
             PhotoNotesTheme {
@@ -43,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
                     // Notes List
                     composable(Constants.defineNoteListRoute()) {
-                        NoteListScreen(navController, viewModel)
+                        NoteListScreen(navController)
                     }
 
                     // Note detail page
@@ -56,7 +55,7 @@ class MainActivity : ComponentActivity() {
                         navBackStackEntry.arguments?.getInt(Constants.NOTES_ARGUMENT_ID)?.let {
                             NoteDetailScreen(
                                 noteId = it,
-                                navController = navController, viewModel = viewModel
+                                navController = navController
                             )
                         }
                     }
@@ -71,14 +70,14 @@ class MainActivity : ComponentActivity() {
                         navBackStackEntry.arguments?.getInt(Constants.NOTES_ARGUMENT_ID)?.let {
                             NoteEditScreen(
                                 noteId = it,
-                                navController = navController, viewModel = viewModel
+                                navController = navController
                             )
                         }
                     }
 
                     // Note Create page
                     composable(Constants.defineNoteCreateRoute()) {
-                        NoteCreateScreen(navController = navController, viewModel = viewModel)
+                        NoteCreateScreen(navController = navController)
                     }
 
                 }

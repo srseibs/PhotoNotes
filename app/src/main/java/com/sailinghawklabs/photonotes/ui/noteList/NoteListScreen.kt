@@ -56,6 +56,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -71,8 +72,8 @@ import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 @Composable
 fun NoteListScreen(
     navController: NavController,
-    viewModel: NotesViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    notesViewModel: NotesViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
 
@@ -89,7 +90,7 @@ fun NoteListScreen(
         dialogOpenState = true
     }
 
-    val noteList by viewModel.notes.observeAsState(emptyList())
+    val noteList by notesViewModel.notes.observeAsState(emptyList())
 
     Scaffold(
         topBar = {
@@ -148,7 +149,7 @@ fun NoteListScreen(
                     deletePressed = {
                         dialogOpenState = false
                         notesToDelete.forEach {
-                            viewModel.deleteNote(it)
+                            notesViewModel.deleteNote(it)
                         }
                     },
                 )

@@ -1,5 +1,7 @@
 package com.sailinghawklabs.photonotes.ui.noteCreate
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -35,19 +39,29 @@ import com.sailinghawklabs.photonotes.PhotoNotesApp
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
 import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
+import dagger.hilt.android.qualifiers.ApplicationContext
+
+
+fun getUriPermission(uri: Uri, appContext: Context) {
+    appContext.contentResolver
+        .takePersistableUriPermission(uri,
+        Intent.FLAG_GRANT_READ_URI_PERMISSION)
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteCreateScreen(
     navController: NavController,
-    viewModel: NotesViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    notesViewModel: NotesViewModel = hiltViewModel(),
 ) {
 
     var currentTitle by remember { mutableStateOf("") }
     var currentNote by remember { mutableStateOf("") }
     var currentImage by remember { mutableStateOf("") }
     var saveButtonVisible by remember { mutableStateOf(false) }
+    val appContext = LocalContext.current.applicationContext
 
     fun setSaveButtonVisibility() {
         saveButtonVisible =
@@ -55,14 +69,13 @@ fun NoteCreateScreen(
     }
 
     val getImageRequest = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri ->
-            if (uri != null) {
-                PhotoNotesApp.getUriPermission(uri)
-            }
-            currentImage = uri.toString()
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            getUriPermission(uri, appContext)
         }
-    )
+        currentImage = uri.toString()
+    }
 
 
 
@@ -72,7 +85,7 @@ fun NoteCreateScreen(
                 GenericAppBar(
                     title = "Create Note",
                     onIconClick = {
-                        viewModel.createNote(
+                        notesViewModel.createNote(
                             title = currentTitle,
                             note = currentNote,
                             imageUri = currentImage

@@ -6,10 +6,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.persistence.NotesDao
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class NotesViewModel(
+@HiltViewModel
+class NotesViewModel @Inject constructor(
     private val db: NotesDao
 ): ViewModel() {
 
@@ -41,12 +44,12 @@ class NotesViewModel(
 
 }
 
-
-@Suppress("UNCHECKED_CAST")
-class NoteViewModelFactory(
-    private val db: NotesDao
-) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return NotesViewModel(db) as T
-    }
-}
+//
+//@Suppress("UNCHECKED_CAST")
+//class NoteViewModelFactory(
+//    private val db: NotesDao
+//) : ViewModelProvider.NewInstanceFactory() {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        return NotesViewModel(db) as T
+//    }
+//}

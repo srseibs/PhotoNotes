@@ -29,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -37,6 +39,7 @@ import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.PhotoNotesApp
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
+import com.sailinghawklabs.photonotes.ui.noteCreate.getUriPermission
 import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 import kotlinx.coroutines.Dispatchers
@@ -47,9 +50,11 @@ import kotlinx.coroutines.launch
 fun NoteEditScreen(
     noteId: Int,
     navController: NavController,
-    viewModel: NotesViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    notesViewModel: NotesViewModel = hiltViewModel()
 ) {
+
+    val appContext = LocalContext.current.applicationContext
 
     val scope = rememberCoroutineScope()
     var note by remember { mutableStateOf(Constants.noteDetailPlaceHolder) }
@@ -63,7 +68,7 @@ fun NoteEditScreen(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri ->
             if (uri != null) {
-                PhotoNotesApp.getUriPermission(uri)
+                getUriPermission(uri, appContext)
             }
             currentImage = uri.toString()
             saveButtonVisible = (currentImage != note.imageUri)
@@ -77,7 +82,7 @@ fun NoteEditScreen(
 
     LaunchedEffect(key1 = true) {
         scope.launch(Dispatchers.IO) {
-            note = viewModel.getNote(noteId) ?: Constants.noteDetailPlaceHolder
+            note = notesViewModel.getNote(noteId) ?: Constants.noteDetailPlaceHolder
             currentTitle = note.title
             currentNote = note.note
             currentImage = note.imageUri
@@ -91,7 +96,7 @@ fun NoteEditScreen(
                 GenericAppBar(
                     title = "Edit Note",
                     onIconClick = {
-                        viewModel.updateNote(
+                        notesViewModel.updateNote(
                             Note(
                                 id = note.id,
                                 title = currentTitle,
