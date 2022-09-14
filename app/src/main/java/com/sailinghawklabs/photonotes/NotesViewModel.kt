@@ -3,7 +3,6 @@ package com.sailinghawklabs.photonotes
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.persistence.NotesDao
