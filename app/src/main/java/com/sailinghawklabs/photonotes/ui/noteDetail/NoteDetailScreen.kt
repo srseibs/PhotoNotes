@@ -29,11 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sailinghawklabs.photonotes.util.Constants
-import com.sailinghawklabs.photonotes.util.Constants.noteDetailPlaceHolder
 import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
-import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
+import com.sailinghawklabs.photonotes.util.Constants
+import com.sailinghawklabs.photonotes.util.Constants.noteDetailPlaceHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -57,73 +56,72 @@ fun NoteDetailScreen(
         }
     }
 
-    PhotoNotesTheme {
-        Scaffold(
-            topBar = {
-                GenericAppBar(
-                    title = note.title,
-                    onIconClick = {
-                        navController.navigate(
-                            Constants.callNoteEditRouteWithParam(
-                                noteId
-                            )
+    Scaffold(
+        topBar = {
+            GenericAppBar(
+                title = note.title,
+                onIconClick = {
+                    navController.navigate(
+                        Constants.callNoteEditRouteWithParam(
+                            noteId
                         )
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit note"
-                        )
-                    },
-                    iconState = true
-                )
-            }
-        ) { scaffoldPadding ->
-            Column(
-                modifier = modifier
-                    .padding(scaffoldPadding)
-                    .fillMaxSize()
+                    )
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit note"
+                    )
+                },
+                iconState = true
             )
-            {
-                note.let { note ->
-                    if (!note.imageUri.isNullOrEmpty()) {
+        }
+    ) { scaffoldPadding ->
+        Column(
+            modifier = modifier
+                .padding(scaffoldPadding)
+                .fillMaxSize()
+        )
+        {
+            note.let { note ->
+                if (!note.imageUri.isNullOrEmpty()) {
 
-                        Image(
-                            painter = rememberAsyncImagePainter(
-                                ImageRequest
-                                    .Builder(LocalContext.current)
-                                    .data(data = Uri.parse(note.imageUri))
-                                    .build()
-                            ),
-                            contentDescription = "Note image",
-                            modifier = Modifier
-                                .fillMaxHeight(0.3f)
-                                .fillMaxWidth(),
-                            contentScale = ContentScale.Crop,
-                        )
-                    }
-
-                    Text(
-                        text = note.title,
-                        style = MaterialTheme.typography.displaySmall,
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(data = Uri.parse(note.imageUri))
+                                .build()
+                        ),
+                        contentDescription = "Note image",
                         modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(top = 24.dp)
+                            .fillMaxHeight(0.3f)
+                            .fillMaxWidth(),
+                        contentScale = ContentScale.Crop,
                     )
-                    Text(
-                        text = note.dateUpdated,
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                    Text(
-                        text = note.note,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(12.dp)
-                    )
-
-
                 }
+
+                Text(
+                    text = note.title,
+                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 24.dp)
+                )
+                Text(
+                    text = note.dateUpdated,
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(12.dp)
+                )
+                Text(
+                    text = note.note,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(12.dp)
+                )
+
+
             }
         }
+
     }
 }

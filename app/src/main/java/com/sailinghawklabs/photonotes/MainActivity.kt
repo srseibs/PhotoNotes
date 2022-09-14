@@ -22,7 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 // things to look at later:
 //   X Use 'by' delegation - no need for .value
 //   X Add Hilt - no need for MainActivity to know about the view model
-//   O Use of Theme in each screen vs once in the activity
+//   X Delete use of Theme in each screen vs once in the activity
 //   X Passing of MutableState vars into sub-composables vs {simple vars + Lambda}.
 //   O Stop passing NavController into sub-composables vs onAction() Lambda hoisting.
 

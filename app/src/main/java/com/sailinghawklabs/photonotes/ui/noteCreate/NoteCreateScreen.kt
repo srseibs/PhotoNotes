@@ -1,7 +1,5 @@
 package com.sailinghawklabs.photonotes.ui.noteCreate
 
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,7 +34,6 @@ import coil.request.ImageRequest
 import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
 import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
-import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 
 
 //fun getUriPermission(uri: Uri, appContext: Context) {
@@ -74,85 +71,83 @@ fun NoteCreateScreen(
         currentImage = uri.toString()
     }
 
-    PhotoNotesTheme {
-        Scaffold(
-            topBar = {
-                GenericAppBar(
-                    title = "Create Note",
-                    onIconClick = {
-                        notesViewModel.createNote(
-                            title = currentTitle,
-                            note = currentNote,
-                            imageUri = currentImage
-                        )
-                        navController.popBackStack()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Save,
-                            contentDescription = "Save note"
-                        )
-                    },
-                    iconState = saveButtonVisible,
-                )
-            },
-
-            floatingActionButton = {
-                NotesFab(
-                    contentDescription = "Add Photo",
-                    action = {
-                        getImageRequest.launch(arrayOf("image/*"))
-                    },
-                    icon = Icons.Default.Camera
-                )
-            }
-
-        ) { scaffoldPadding ->
-            Column(
-                modifier = modifier
-                    .padding(scaffoldPadding)
-                    .fillMaxSize()
-            )
-            {
-                if (currentImage.isNotEmpty()) {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            ImageRequest
-                                .Builder(LocalContext.current)
-                                .data(data = Uri.parse(currentImage))
-                                .build()
-                        ),
-                        contentDescription = "Note image",
-                        modifier = Modifier
-                            .fillMaxHeight(0.3f)
-                            .fillMaxWidth()
-                            .padding(6.dp),
-                        contentScale = ContentScale.Crop,
+    Scaffold(
+        topBar = {
+            GenericAppBar(
+                title = "Create Note",
+                onIconClick = {
+                    notesViewModel.createNote(
+                        title = currentTitle,
+                        note = currentNote,
+                        imageUri = currentImage
                     )
-                }
+                    navController.popBackStack()
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Save,
+                        contentDescription = "Save note"
+                    )
+                },
+                iconState = saveButtonVisible,
+            )
+        },
 
-                TextField(
-                    value = currentTitle,
-                    onValueChange = { value ->
-                        currentTitle = value
-                        setSaveButtonVisibility()
-                    },
-                    label = { Text("Title") }
-                )
-                Spacer(Modifier.padding(12.dp))
-                TextField(
-                    value = currentNote,
+        floatingActionButton = {
+            NotesFab(
+                contentDescription = "Add Photo",
+                action = {
+                    getImageRequest.launch(arrayOf("image/*"))
+                },
+                icon = Icons.Default.Camera
+            )
+        }
+
+    ) { scaffoldPadding ->
+        Column(
+            modifier = modifier
+                .padding(scaffoldPadding)
+                .fillMaxSize()
+        )
+        {
+            if (currentImage.isNotEmpty()) {
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(data = Uri.parse(currentImage))
+                            .build()
+                    ),
+                    contentDescription = "Note image",
                     modifier = Modifier
-                        .fillMaxHeight(0.5f)
-                        .fillMaxWidth(),
-                    onValueChange = { value ->
-                        currentNote = value
-                        setSaveButtonVisibility()
-                    },
-                    label = { Text("Content") }
+                        .fillMaxHeight(0.3f)
+                        .fillMaxWidth()
+                        .padding(6.dp),
+                    contentScale = ContentScale.Crop,
                 )
             }
 
+            TextField(
+                value = currentTitle,
+                onValueChange = { value ->
+                    currentTitle = value
+                    setSaveButtonVisibility()
+                },
+                label = { Text("Title") }
+            )
+            Spacer(Modifier.padding(12.dp))
+            TextField(
+                value = currentNote,
+                modifier = Modifier
+                    .fillMaxHeight(0.5f)
+                    .fillMaxWidth(),
+                onValueChange = { value ->
+                    currentNote = value
+                    setSaveButtonVisibility()
+                },
+                label = { Text("Content") }
+            )
         }
+
     }
 }

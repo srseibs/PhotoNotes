@@ -33,12 +33,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sailinghawklabs.photonotes.util.Constants
 import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
 import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
-import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
+import com.sailinghawklabs.photonotes.util.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -85,87 +84,82 @@ fun NoteEditScreen(
         }
     }
 
-    PhotoNotesTheme {
-        Scaffold(
-            topBar = {
-                GenericAppBar(
-                    title = "Edit Note",
-                    onIconClick = {
-                        notesViewModel.updateNote(
-                            Note(
-                                id = note.id,
-                                title = currentTitle,
-                                note = currentNote,
-                                imageUri = currentImage
-                            )
+    Scaffold(
+        topBar = {
+            GenericAppBar(
+                title = "Edit Note",
+                onIconClick = {
+                    notesViewModel.updateNote(
+                        Note(
+                            id = note.id,
+                            title = currentTitle,
+                            note = currentNote,
+                            imageUri = currentImage
                         )
-                        navController.popBackStack()
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Save,
-                            contentDescription = "Save note"
-                        )
-                    },
-                    iconState = saveButtonVisible,
-                )
-            },
-            floatingActionButton = {
-                NotesFab(
-                    contentDescription = "Add Photo",
-                    action = {
-                        getImageRequest.launch(arrayOf("image/*"))
-                    },
-                    icon = Icons.Default.Camera
-                )
-            }
-
-        ) { scaffoldPadding ->
-            Column(
-                modifier = modifier
-                    .padding(scaffoldPadding)
-                    .fillMaxSize()
-            )
-            {
-                if (!currentImage.isNullOrEmpty()) {
-
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            ImageRequest
-                                .Builder(LocalContext.current)
-                                .data(data = Uri.parse(currentImage))
-                                .build()
-                        ),
-                        contentDescription = "Note image",
-                        modifier = Modifier
-                            .fillMaxHeight(0.3f)
-                            .fillMaxWidth()
-                            .padding(6.dp),
-                        contentScale = ContentScale.Crop,
                     )
-                }
+                    navController.popBackStack()
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Save,
+                        contentDescription = "Save note"
+                    )
+                },
+                iconState = saveButtonVisible,
+            )
+        },
+        floatingActionButton = {
+            NotesFab(
+                contentDescription = "Add Photo",
+                action = {
+                    getImageRequest.launch(arrayOf("image/*"))
+                },
+                icon = Icons.Default.Camera
+            )
+        }
 
-                TextField(
-                    value = currentTitle,
-                    onValueChange = { value ->
-                        currentTitle = value
-                        setSaveButtonVisibility()
-                    },
-                    label = { Text("Title") }
-                )
-                Spacer(Modifier.padding(12.dp))
-                TextField(
-                    value = currentNote,
-                    onValueChange = { value ->
-                        currentNote = value
-                        setSaveButtonVisibility()
-                    },
-                    label = { Text("Content") }
+    ) { scaffoldPadding ->
+        Column(
+            modifier = modifier
+                .padding(scaffoldPadding)
+                .fillMaxSize()
+        )
+        {
+            if (!currentImage.isNullOrEmpty()) {
+
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(data = Uri.parse(currentImage))
+                            .build()
+                    ),
+                    contentDescription = "Note image",
+                    modifier = Modifier
+                        .fillMaxHeight(0.3f)
+                        .fillMaxWidth()
+                        .padding(6.dp),
+                    contentScale = ContentScale.Crop,
                 )
             }
 
+            TextField(
+                value = currentTitle,
+                onValueChange = { value ->
+                    currentTitle = value
+                    setSaveButtonVisibility()
+                },
+                label = { Text("Title") }
+            )
+            Spacer(Modifier.padding(12.dp))
+            TextField(
+                value = currentNote,
+                onValueChange = { value ->
+                    currentNote = value
+                    setSaveButtonVisibility()
+                },
+                label = { Text("Content") }
+            )
         }
     }
-
-
 }
