@@ -19,13 +19,18 @@ import dagger.hilt.android.AndroidEntryPoint
 // DBTechProjects  Daniel Butler
 //  https://www.youtube.com/watch?v=eugou_G_YvY
 
+// I added latest versions of everything.
+//       Material 3 since I want to practice more with it.
+
 // things to look at later:
 //   X Use 'by' delegation - no need for .value
-//   X Add Hilt - no need for MainActivity to know about the view model
+//   X Add Hilt - no need for MainActivity to know anything about the view model
 //   X Delete use of Theme in each screen vs once in the activity
-//   X Passing of MutableState vars into sub-composable vs {simple vars + Lambda}.
+//   X Remove passing MutableState vars into sub-composable vs {simple vars + Lambda}.
+//      Improves preview and testability.
 //   X Stop passing NavController into sub-composable vs onAction() Lambda hoisting.
-//   O My theme is ugly...
+//      Improve testability.
+//   X My theme is ugly...  done; well, less ugly.
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

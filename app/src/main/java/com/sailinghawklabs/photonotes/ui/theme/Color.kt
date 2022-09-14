@@ -22,8 +22,8 @@ sealed class ThemeColors(
 ) {
     object Day : ThemeColors(
         card = Color(0xFF7CBCF6),
-        cardAlternate = Color(0xFFC9D3D6),
-        background = Color(0xFFF3E5F5),
+        cardAlternate = Color(0xFFB0D3FA),
+        background = Color(0xFFD9DFF3),
         surface = Color(0xFF82C0FF),
         primary = Color(0xFF1B2FB0),
         text = Color(0xFF000000)
@@ -31,9 +31,9 @@ sealed class ThemeColors(
 
     object Night : ThemeColors(
         card = Color(0xFF0E2249),
-        cardAlternate = Color(0xFF133A41),
+        cardAlternate = Color(0xFF010618),
         background = Color(0xFF0C3C98),
-        surface = Color(0xFF22522F),
+        surface = Color(0xFF1635D1),
         primary = Color(0xFF172840),
         text = Color(0xffffffff)
     )

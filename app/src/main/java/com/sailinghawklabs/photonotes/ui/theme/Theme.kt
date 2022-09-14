@@ -1,8 +1,10 @@
 package com.sailinghawklabs.photonotes.ui.theme
 
 import android.app.Activity
+import android.content.res.Resources
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -21,6 +23,7 @@ import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = ThemeColors.Night.primary,
+    onPrimary = ThemeColors.Night.text,
     primaryContainer = ThemeColors.Night.card,
     onPrimaryContainer = ThemeColors.Night.text,
     secondaryContainer = ThemeColors.Night.cardAlternate,
@@ -49,7 +52,6 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
-
 
 @Composable
 fun PhotoNotesTheme(
