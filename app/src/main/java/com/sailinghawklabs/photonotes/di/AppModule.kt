@@ -38,6 +38,4 @@ fun getDao(db: NotesDatabase) : NotesDao =  db.getDao()
 @Singleton
 fun provideUriPermissionHelper(@ApplicationContext context: Context) = UriPermissionHelper(context)
 
-
-
 }
