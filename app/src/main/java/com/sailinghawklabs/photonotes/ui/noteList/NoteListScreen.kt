@@ -60,7 +60,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sailinghawklabs.photonotes.Constants
+import com.sailinghawklabs.photonotes.util.Constants
 import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.model.getDay

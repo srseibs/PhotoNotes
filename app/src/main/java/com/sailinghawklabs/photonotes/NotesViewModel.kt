@@ -1,11 +1,13 @@
 package com.sailinghawklabs.photonotes
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.persistence.NotesDao
+import com.sailinghawklabs.photonotes.util.UriPermissionHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotesViewModel @Inject constructor(
-    private val db: NotesDao
+    private val db: NotesDao,
+    private val uriPermissionHelper: UriPermissionHelper
 ): ViewModel() {
 
     val notes: LiveData<List<Note>> = db.getAllNotes()
@@ -25,6 +28,12 @@ class NotesViewModel @Inject constructor(
     fun deleteNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             db.deleteNote(note)
+        }
+    }
+
+    fun requestUriPermission(uri: Uri) {
+        viewModelScope.launch {
+            uriPermissionHelper.get(uri)
         }
     }
 

@@ -30,23 +30,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.sailinghawklabs.photonotes.NotesViewModel
-import com.sailinghawklabs.photonotes.PhotoNotesApp
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
 import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 
-fun getUriPermission(uri: Uri, appContext: Context) {
-    appContext.contentResolver
-        .takePersistableUriPermission(uri,
-        Intent.FLAG_GRANT_READ_URI_PERMISSION)
-}
+//fun getUriPermission(uri: Uri, appContext: Context) {
+//    appContext.contentResolver
+//        .takePersistableUriPermission(uri,
+//        Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//}
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +58,6 @@ fun NoteCreateScreen(
     var currentNote by remember { mutableStateOf("") }
     var currentImage by remember { mutableStateOf("") }
     var saveButtonVisible by remember { mutableStateOf(false) }
-    val appContext = LocalContext.current.applicationContext
 
     fun setSaveButtonVisibility() {
         saveButtonVisible =
@@ -72,12 +68,11 @@ fun NoteCreateScreen(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
         if (uri != null) {
-            getUriPermission(uri, appContext)
+            notesViewModel.requestUriPermission(uri)
+//            getUriPermission(uri, appContext)
         }
         currentImage = uri.toString()
     }
-
-
 
     PhotoNotesTheme {
         Scaffold(

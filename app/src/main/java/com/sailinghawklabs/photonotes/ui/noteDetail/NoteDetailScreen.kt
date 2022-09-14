@@ -26,12 +26,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sailinghawklabs.photonotes.Constants
-import com.sailinghawklabs.photonotes.Constants.noteDetailPlaceHolder
+import com.sailinghawklabs.photonotes.util.Constants
+import com.sailinghawklabs.photonotes.util.Constants.noteDetailPlaceHolder
 import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme

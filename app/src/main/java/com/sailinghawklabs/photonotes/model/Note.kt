@@ -1,11 +1,10 @@
 package com.sailinghawklabs.photonotes.model
 
-import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.sailinghawklabs.photonotes.Constants.TABLE_NAME
+import com.sailinghawklabs.photonotes.util.Constants.TABLE_NAME
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

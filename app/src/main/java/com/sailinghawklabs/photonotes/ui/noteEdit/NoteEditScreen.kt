@@ -30,16 +30,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sailinghawklabs.photonotes.Constants
+import com.sailinghawklabs.photonotes.util.Constants
 import com.sailinghawklabs.photonotes.NotesViewModel
-import com.sailinghawklabs.photonotes.PhotoNotesApp
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
-import com.sailinghawklabs.photonotes.ui.noteCreate.getUriPermission
 import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
 import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 import kotlinx.coroutines.Dispatchers
@@ -54,8 +51,6 @@ fun NoteEditScreen(
     notesViewModel: NotesViewModel = hiltViewModel()
 ) {
 
-    val appContext = LocalContext.current.applicationContext
-
     val scope = rememberCoroutineScope()
     var note by remember { mutableStateOf(Constants.noteDetailPlaceHolder) }
 
@@ -68,7 +63,7 @@ fun NoteEditScreen(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri ->
             if (uri != null) {
-                getUriPermission(uri, appContext)
+                notesViewModel.requestUriPermission(uri)
             }
             currentImage = uri.toString()
             saveButtonVisible = (currentImage != note.imageUri)

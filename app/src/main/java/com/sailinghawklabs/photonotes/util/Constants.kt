@@ -1,4 +1,4 @@
-package com.sailinghawklabs.photonotes
+package com.sailinghawklabs.photonotes.util
 
 import com.sailinghawklabs.photonotes.model.Note
 
