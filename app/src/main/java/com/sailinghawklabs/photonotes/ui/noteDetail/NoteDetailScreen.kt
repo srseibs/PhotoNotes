@@ -26,12 +26,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.ui.GenericAppBar
-import com.sailinghawklabs.photonotes.util.Constants
 import com.sailinghawklabs.photonotes.util.Constants.noteDetailPlaceHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,7 +38,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun NoteDetailScreen(
     noteId: Int,
-    navController: NavController,
+    onEditClicked: () -> Unit,
     modifier: Modifier = Modifier,
     notesViewModel: NotesViewModel = hiltViewModel(),
 ) {
@@ -60,13 +58,7 @@ fun NoteDetailScreen(
         topBar = {
             GenericAppBar(
                 title = note.title,
-                onIconClick = {
-                    navController.navigate(
-                        Constants.callNoteEditRouteWithParam(
-                            noteId
-                        )
-                    )
-                },
+                onIconClick = { onEditClicked() },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Edit,
@@ -85,7 +77,6 @@ fun NoteDetailScreen(
         {
             note.let { note ->
                 if (!note.imageUri.isNullOrEmpty()) {
-
                     Image(
                         painter = rememberAsyncImagePainter(
                             ImageRequest
@@ -118,10 +109,7 @@ fun NoteDetailScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(12.dp)
                 )
-
-
             }
         }
-
     }
 }

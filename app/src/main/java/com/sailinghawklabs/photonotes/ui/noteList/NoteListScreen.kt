@@ -57,10 +57,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.sailinghawklabs.photonotes.util.Constants
 import com.sailinghawklabs.photonotes.NotesViewModel
 import com.sailinghawklabs.photonotes.model.Note
 import com.sailinghawklabs.photonotes.model.getDay
@@ -71,7 +69,8 @@ import com.sailinghawklabs.photonotes.ui.theme.PhotoNotesTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteListScreen(
-    navController: NavController,
+    onCreateClicked: () -> Unit,
+    onDetailClick: (noteId: Int) -> Unit,
     modifier: Modifier = Modifier,
     notesViewModel: NotesViewModel = hiltViewModel(),
 ) {
@@ -118,9 +117,7 @@ fun NoteListScreen(
         floatingActionButton = {
             NotesFab(
                 contentDescription = "New Note",
-                action = {
-                    navController.navigate(Constants.defineNoteCreateRoute())
-                },
+                action = { onCreateClicked() },
                 icon = Icons.Default.Add
             )
         }
@@ -139,8 +136,8 @@ fun NoteListScreen(
                 onDeleteNotes = { notesList, prompt ->
                     showDeleteDialog(notesList, prompt)
                 },
+                onDetailClick = { onDetailClick(it) },
                 query = searchQuery,
-                navController = navController,
             )
             if (dialogOpenState) {
                 DeleteDialog(
@@ -198,9 +195,9 @@ fun SearchBar(
 fun NotesList(
     notes: List<Note>,
     onDeleteNotes: (notes: List<Note>, prompt: String) -> Unit,
+    onDetailClick: (notId: Int) -> Unit,
     modifier: Modifier = Modifier,
     query: String = "",
-    navController: NavController,
 
 ) {
     var previousHeader = ""
@@ -240,6 +237,7 @@ fun NotesList(
                 onDelete = {
                     onDeleteNotes(listOf(note), "Are you sure you want to delete this note?")
                 },
+                onDetailClick = { onDetailClick(it) },
                 cardColors = if (index % 2 == 0) {
                     cardColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -251,7 +249,6 @@ fun NotesList(
                         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                 },
-                navController = navController,
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
@@ -263,7 +260,7 @@ fun NotesList(
 fun NotesListItem(
     note: Note,
     onDelete: () -> Unit,
-    navController: NavController,
+    onDetailClick:(noteId:Int) -> Unit,
     cardColors: CardColors = cardColors()
 ) {
 
@@ -279,7 +276,7 @@ fun NotesListItem(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = false),
                     onClick = {
-                        navController.navigate(Constants.noteDetailNavigation(note.id ?: 0))
+                        onDetailClick(note.id ?: 0)
                     },
                     onLongClick = {
                         if (note.id != 0) {
@@ -404,6 +401,13 @@ fun DeleteDialogPreview() {
             // action on delete pressed
         }
     }
+}
 
 
+@Preview
+@Composable
+fun NoteListScreenPreview() {
+    PhotoNotesTheme {
+        NoteListScreen(onCreateClicked = {  }, onDetailClick = {})
+    }
 }

@@ -23,8 +23,9 @@ import dagger.hilt.android.AndroidEntryPoint
 //   X Use 'by' delegation - no need for .value
 //   X Add Hilt - no need for MainActivity to know about the view model
 //   X Delete use of Theme in each screen vs once in the activity
-//   X Passing of MutableState vars into sub-composables vs {simple vars + Lambda}.
-//   O Stop passing NavController into sub-composables vs onAction() Lambda hoisting.
+//   X Passing of MutableState vars into sub-composable vs {simple vars + Lambda}.
+//   X Stop passing NavController into sub-composable vs onAction() Lambda hoisting.
+//   O My theme is ugly...
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -34,8 +35,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             PhotoNotesTheme {
-
                 val navController = rememberNavController()
+
                 NavHost(
                     navController = navController,
                     startDestination = Constants.defineNoteListRoute()
@@ -43,7 +44,14 @@ class MainActivity : ComponentActivity() {
 
                     // Notes List
                     composable(Constants.defineNoteListRoute()) {
-                        NoteListScreen(navController)
+                        NoteListScreen(
+                            onCreateClicked = {
+                                navController.navigate(Constants.defineNoteCreateRoute())
+                            },
+                            onDetailClick = {
+                                navController.navigate(Constants.noteDetailNavigation(it))
+                            }
+                        )
                     }
 
                     // Note detail page
@@ -56,7 +64,9 @@ class MainActivity : ComponentActivity() {
                         navBackStackEntry.arguments?.getInt(Constants.NOTES_ARGUMENT_ID)?.let {
                             NoteDetailScreen(
                                 noteId = it,
-                                navController = navController
+                                onEditClicked = {
+                                    navController.navigate(Constants.callNoteEditRouteWithParam(it))
+                                }
                             )
                         }
                     }
@@ -71,14 +81,16 @@ class MainActivity : ComponentActivity() {
                         navBackStackEntry.arguments?.getInt(Constants.NOTES_ARGUMENT_ID)?.let {
                             NoteEditScreen(
                                 noteId = it,
-                                navController = navController
+                                onBackPressed = {navController.popBackStack()  }
                             )
                         }
                     }
 
                     // Note Create page
                     composable(Constants.defineNoteCreateRoute()) {
-                        NoteCreateScreen(navController = navController)
+                        NoteCreateScreen(
+                            onCreated = { navController.popBackStack() }
+                        )
                     }
 
                 }

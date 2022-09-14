@@ -28,7 +28,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.sailinghawklabs.photonotes.NotesViewModel
@@ -46,9 +45,9 @@ import com.sailinghawklabs.photonotes.ui.noteList.NotesFab
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteCreateScreen(
-    navController: NavController,
     modifier: Modifier = Modifier,
     notesViewModel: NotesViewModel = hiltViewModel(),
+    onCreated: () -> Unit,
 ) {
 
     var currentTitle by remember { mutableStateOf("") }
@@ -66,7 +65,6 @@ fun NoteCreateScreen(
     ) { uri ->
         if (uri != null) {
             notesViewModel.requestUriPermission(uri)
-//            getUriPermission(uri, appContext)
         }
         currentImage = uri.toString()
     }
@@ -81,7 +79,7 @@ fun NoteCreateScreen(
                         note = currentNote,
                         imageUri = currentImage
                     )
-                    navController.popBackStack()
+                    onCreated()
                 },
                 icon = {
                     Icon(

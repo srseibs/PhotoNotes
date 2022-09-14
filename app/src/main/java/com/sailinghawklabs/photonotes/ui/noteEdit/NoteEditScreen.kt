@@ -30,7 +30,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.sailinghawklabs.photonotes.NotesViewModel
@@ -45,7 +44,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun NoteEditScreen(
     noteId: Int,
-    navController: NavController,
+    onBackPressed: () -> Unit,
     modifier: Modifier = Modifier,
     notesViewModel: NotesViewModel = hiltViewModel()
 ) {
@@ -97,7 +96,7 @@ fun NoteEditScreen(
                             imageUri = currentImage
                         )
                     )
-                    navController.popBackStack()
+                    onBackPressed()
                 },
                 icon = {
                     Icon(
