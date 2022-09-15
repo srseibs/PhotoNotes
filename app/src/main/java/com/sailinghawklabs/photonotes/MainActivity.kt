@@ -21,13 +21,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 // I added latest versions of everything.
 //       Material 3 since I want to practice more with it.
+//       Use extended Icons instead of creating our own.
 
-// things to look at later:
-//   X Use 'by' delegation - no need for .value
-//   X Add Hilt - no need for MainActivity to know anything about the view model
-//   X Delete use of Theme in each screen vs once in the activity
-//   X Remove passing MutableState vars into sub-composable vs {simple vars + Lambda}.
+// changes after completion of video:
+//   X Stop passing MutableState vars into sub-composable vs {simple vars + Lambda}.
 //      Improves preview and testability.
+//   X Use 'by' delegation - no need for .value Using "=" was necessary since we were passing
+//     the MutableState into sub-composables.
+//   X Add Hilt - no need for MainActivity to know anything about the view model
+//   X Delete use of Theme in each screen vs once in MainActivity
+
 //   X Stop passing NavController into sub-composable vs onAction() Lambda hoisting.
 //      Improve testability.
 //   X My theme is ugly...  done; well, less ugly.
