@@ -3,9 +3,9 @@ package com.sailinghawklabs.photonotes.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.sailinghawklabs.photonotes.util.Constants
 import com.sailinghawklabs.photonotes.persistence.NotesDao
 import com.sailinghawklabs.photonotes.persistence.NotesDatabase
+import com.sailinghawklabs.photonotes.util.Constants
 import com.sailinghawklabs.photonotes.util.UriPermissionHelper
 import dagger.Module
 import dagger.Provides
